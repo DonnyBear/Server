@@ -18,7 +18,6 @@ class NetworkMgr(object):
         self.outputs = []
         self.message_queues = {}
         self.is_run = False
-        self.f = None
 
     def start_listen(self):
         self.sock = socket.socket()
@@ -26,7 +25,6 @@ class NetworkMgr(object):
         self.sock.bind(ADDR)
         self.sock.listen(1024)
         self.inputs.append(self.sock)
-        self.f = open("text.txt", "w")
         self.is_run = True
 
 
@@ -52,17 +50,18 @@ class NetworkMgr(object):
                     s.close()
                     self.message_queues.pop(s, None)
                 # 尝试读取数据
-                data = self.message_queues[s].read()
-                if not data:
-                    continue
-                self.f.write(data.decode("utf-8"))
+                cur_sock = self.message_queues.get(s)
+                if cur_sock:
+                    data = cur_sock.read()
+                    if not data:
+                        continue
          for s in exceptional:
             print("GE_EXC,套接字出错")
             if s in self.outputs:
                 self.outputs.remove(s)
             self.inputs.remove(s)
             s.close()
-            self.end_listen()
+            # self.end_listen()
 
 
     def end_listen(self):
@@ -71,7 +70,6 @@ class NetworkMgr(object):
         for s in self.inputs:
             s.close()
         self.inputs.clear()
-        self.f.close()
         self.is_run = False
 
 

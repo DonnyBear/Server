@@ -10,9 +10,10 @@ import threading
 from CycleBuff import CycleBuff
 
 def producer():
-	global buff, produce_num, produce_data
-	while produce_num < 5000000:
-		num = random.randint(1, 50000)
+	global buff, produce_num, produce_data, CNT
+	while produce_num < 500000:
+		num = CNT
+		CNT += 1
 		produce_data.append(num)
 		produce_num += 1
 		result = buff.push(num)
@@ -24,7 +25,7 @@ def producer():
 
 def comsumer():
 	global buff, comsume_num, produce_num, comsume_data, a
-	while comsume_num < 5000000:
+	while comsume_num < 500000:
 		# print buff.read_fence, buff.buff[buff.read_fence - 2:]
 		result = buff.pop()
 		if result is None:
@@ -53,7 +54,8 @@ if __name__ == "__main__":
 	produce_data = []
 	comsume_num = 0
 	comsume_data = []
-	buff = CycleBuff.CycleBuff(5000)
+	CNT = 0
+	buff = CycleBuff.CycleBuff(500)
 	a = threading.Thread(target=producer)
 	b = threading.Thread(target=comsumer)
 	a.start()
