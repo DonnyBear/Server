@@ -19,18 +19,16 @@ class CycleBuff(object):
 	def push(self, num):
 		if self.left_size <= 0:
 			return False
-		self.buff[self.write_fence] = num
+		self.buff[self.write_fence % self.max_size] = num
 		self.write_fence += 1
-		self.write_fence = self.write_fence % self.max_size
 		self.left_size -= 1
 		return True
 
 	def pop(self):
-		if self.left_size >= self.max_size:
+		if self.read_fence >= self.write_fence:
 			return None
-		num = self.buff[self.read_fence]
+		num = self.buff[self.read_fence % self.max_size]
 		self.read_fence += 1
-		self.read_fence = self.read_fence % self.max_size
 		self.left_size += 1
 		return num
 
