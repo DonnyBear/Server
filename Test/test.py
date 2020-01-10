@@ -30,7 +30,6 @@ def comsumer():
 			result = buff.pop()
 			if result is None:
 				time.sleep(0.001)
-				print "pop None", read_cnt
 				continue
 			read_cnt += 1
 			f.write(str(result) + "\n")
